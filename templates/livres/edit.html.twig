@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ livre.nom }}{% endblock %}
+
+{% block body %}
+    <h1>Modifier le livre</h1>
+
+    {{ include('livres/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+
+    <div class="barre-boutons">
+        <a href="{{ path('app_livres_index') }}" class="btn">Retour à la liste</a>
+        <form method="post" action="{{ path('app_livres_delete', {'id': livre.id}) }}"
+              onsubmit="return confirm('Supprimer le livre « {{ livre.nom|e('js') }} » ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+            <button class="btn btn-supprimer">Supprimer</button>
+        </form>
+    </div>
+{% endblock %}

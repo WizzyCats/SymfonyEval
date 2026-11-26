@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livres index{% endblock %}
+
+{% block body %}
+    <h1>Livres index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Synopsis</th>
+                <th>Publication</th>
+                <th>Isbn</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for livre in livres %}
+            <tr>
+                <td>{{ livre.nom }}</td>
+                <td>{% if livre.synopsis|length > 100 %}
+                        {{ livre.synopsis|slice(0, 100) }}<span hidden>{{ livre.synopsis|slice(100) }}</span>
+                        <button type="button" class="btn-plus"
+                                onclick="const suite = this.previousElementSibling; suite.hidden = !suite.hidden; this.textContent = suite.hidden ? '…' : 'moins';">…</button>
+                    {% else %}
+                        {{ livre.synopsis }}
+                    {% endif %}
+                </td>
+                <td>{{ livre.publication ? livre.publication|date('Y-m-d') : '' }}</td>
+                <td>{{ livre.isbn }}</td>
+                <td class="actions">
+                    <a href="{{ path('app_livres_show', {'id': livre.id}) }}" class="btn btn-petit">Voir</a>
+                    <a href="{{ path('app_livres_edit', {'id': livre.id}) }}" class="btn btn-petit btn-modifier">Modifier</a>
+                    <form method="post" action="{{ path('app_livres_delete', {'id': livre.id}) }}"
+                        onsubmit="return confirm('Supprimer le livre « {{ livre.nom|e('js') }} » ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+                        <button class="btn btn-petit btn-supprimer">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_livres_new') }}">Create new</a>
+{% endblock %}

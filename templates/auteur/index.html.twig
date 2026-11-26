@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Auteur index{% endblock %}
+
+{% block body %}
+    <h1>Auteur index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Pseudonyme</th>
+                <th>Biographie</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for auteur in auteurs %}
+            <tr>
+                <td>{{ auteur.pseudonyme }}</td>
+                <td>{% if auteur.biographie|length > 200 %}
+                        {{ auteur.biographie|slice(0, 200) }}<span hidden>{{ auteur.biographie|slice(200) }}</span>
+                        <button type="button" class="btn-plus"
+                                onclick="const suite = this.previousElementSibling; suite.hidden = !suite.hidden; this.textContent = suite.hidden ? '…' : 'moins';">…</button>
+                    {% else %}
+                        {{ auteur.biographie }}
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{{ path('app_auteur_show', {'id': auteur.id}) }}" class="btn btn-petit">Voir</a>
+                    <a href="{{ path('app_auteur_edit', {'id': auteur.id}) }}" class="btn btn-petit btn-modifier">Modifier</a>
+                    <form method="post" action="{{ path('app_auteur_delete', {'id': auteur.id}) }}"
+                        onsubmit="return confirm('Supprimer l\'auteur « {{ auteur.pseudonyme|e('js') }} » et tous ses livres ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ auteur.id) }}">
+                        <button class="btn btn-petit btn-supprimer">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun auteur enregistré</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_auteur_new') }}">Créer nouvel auteur</a>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Genre index{% endblock %}
+
+{% block body %}
+    <h1>Genre index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for genre in genres %}
+            <tr>
+                <td>{{ genre.nom }}</td>
+                <td class="actions">
+                    <form method="post" action="{{ path('app_genre_delete', {'id': genre.id}) }}"
+                        onsubmit="return confirm('Supprimer le genre « {{ genre.nom|e('js') }} » ?');"
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ genre.id) }}">
+                        <button class="btn btn-petit btn-supprimer">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_genre_new') }}">Create new</a>
+{% endblock %}

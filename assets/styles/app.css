@@ -1,0 +1,921 @@
+/* =========================================================
+   Thème « Ciel étoilé arc-en-ciel » — version Bibliothèque
+   Tables : Auteur (nom, prenom, biographie, livres)
+            Livre  (nom, synopsis, parution, isbn, genre)
+            Genre  (nom)
+   ========================================================= */
+
+/* Police arrondie (doit rester tout en haut du fichier) */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+/* ===== Palette ===== */
+:root {
+  --nuit: #0d1d52;
+  --nuit-claire: #1f4fa8;
+  --ciel: #5fb8ee;
+
+  --rose: #f6a6d6;
+  --peche: #ffcf9f;
+  --jaune: #fff0a6;
+  --menthe: #b5efd6;
+  --bleu: #9fd8ff;
+  --lavande: #c8b5ff;
+
+  --nuage: #fdfaff;
+  --texte: #3b2f5e;
+  --texte-doux: #7a6fa0;
+  --danger: #ff8fa3;
+
+  --arc-en-ciel: linear-gradient(90deg, var(--rose), var(--peche), var(--jaune), var(--menthe), var(--bleu), var(--lavande));
+  --ombre: 0 6px 18px rgba(13, 29, 82, 0.25);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ===== Fond : ciel de nuit étoilé ===== */
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  color: var(--nuage);
+  background:
+    radial-gradient(2px 2px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 28% 8%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 47% 22%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 66% 12%, #fff 50%, transparent 51%),
+    radial-gradient(2.5px 2.5px at 82% 26%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 92% 6%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 8% 42%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 74% 40%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 38% 48%, #fff 50%, transparent 51%),
+    linear-gradient(180deg, var(--nuit) 0%, var(--nuit-claire) 55%, var(--ciel) 100%);
+  background-attachment: fixed;
+}
+
+/* La lune : un rond transparent dont seule l'ombre décalée se voit */
+body::before {
+  content: '';
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  box-shadow: 16px 8px 0 0 #fbe6c4;
+  filter: drop-shadow(0 0 12px rgba(251, 230, 196, 0.7));
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Les nuages en bas de l'écran */
+body::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -40px;
+  height: 160px;
+  background:
+    radial-gradient(circle at 10% 100%, var(--nuage) 70px, transparent 71px),
+    radial-gradient(circle at 30% 100%, #e8e4ff 90px, transparent 91px),
+    radial-gradient(circle at 52% 100%, var(--nuage) 80px, transparent 81px),
+    radial-gradient(circle at 74% 100%, #dff2ff 95px, transparent 96px),
+    radial-gradient(circle at 93% 100%, var(--nuage) 75px, transparent 76px);
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 800px) {
+  body::before {
+    display: none;
+  }
+}
+
+/* ===== Conteneur principal ===== */
+header,
+main,
+footer {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+header {
+  padding-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+main {
+  padding-bottom: 180px; /* laisse la place aux nuages */
+}
+
+/* Petit arc-en-ciel sous le menu */
+header::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 6px;
+  margin: 1rem auto 0;
+  border-radius: 999px;
+  background: var(--arc-en-ciel);
+}
+
+/* ===== Menu ===== */
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+
+nav a {
+  color: var(--nuage);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Lien de la page en cours : ajoute la classe "active" toi-même */
+nav a.active {
+  background: var(--arc-en-ciel);
+  color: var(--texte);
+  font-weight: 600;
+}
+
+/* ===== Titres ===== */
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem;
+  text-shadow: 0 0 12px rgba(200, 181, 255, 0.8);
+}
+
+h1::before,
+h1::after {
+  content: ' ✦ ';
+  color: var(--jaune);
+  animation: scintille 2s ease-in-out infinite;
+}
+
+@keyframes scintille {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin: 2rem 0 1rem;
+}
+
+a {
+  color: var(--jaune);
+}
+
+/* Barre d'outils au-dessus d'une liste (titre + bouton "Ajouter") */
+.barre-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* =========================================================
+   GENRES : petites pastilles
+   ========================================================= */
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.genre {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texte);
+  text-decoration: none;
+  background: var(--lavande);
+  border-radius: 999px;
+}
+
+/* Chaque pastille prend une couleur de l'arc-en-ciel, en boucle */
+.genres .genre:nth-child(6n + 1) { background: var(--rose); }
+.genres .genre:nth-child(6n + 2) { background: var(--peche); }
+.genres .genre:nth-child(6n + 3) { background: var(--jaune); }
+.genres .genre:nth-child(6n + 4) { background: var(--menthe); }
+.genres .genre:nth-child(6n + 5) { background: var(--bleu); }
+.genres .genre:nth-child(6n + 6) { background: var(--lavande); }
+
+/* Genre sélectionné dans un filtre */
+.genre.active {
+  background: var(--arc-en-ciel);
+  box-shadow: 0 0 0 3px var(--nuage);
+}
+
+/* =========================================================
+   LIVRES : grille de cartes
+   ========================================================= */
+.grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.2rem;
+}
+
+.carte-livre {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.2rem;
+  color: var(--texte);
+  background: var(--nuage);
+  border-radius: 20px;
+  border-top: 8px solid var(--rose);
+  box-shadow: var(--ombre);
+  transition: transform 0.2s;
+}
+
+.carte-livre:hover {
+  transform: translateY(-4px);
+}
+
+.grille .carte-livre:nth-child(6n + 2) { border-top-color: var(--peche); }
+.grille .carte-livre:nth-child(6n + 3) { border-top-color: var(--jaune); }
+.grille .carte-livre:nth-child(6n + 4) { border-top-color: var(--menthe); }
+.grille .carte-livre:nth-child(6n + 5) { border-top-color: var(--bleu); }
+.grille .carte-livre:nth-child(6n + 6) { border-top-color: var(--lavande); }
+
+.carte-livre h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.carte-livre h3 a {
+  color: var(--texte);
+  text-decoration: none;
+}
+
+.carte-livre h3 a:hover {
+  color: #d45fa6;
+}
+
+/* Auteur sous le titre */
+.carte-livre .auteur-nom {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--texte-doux);
+}
+
+/* Synopsis coupé à 3 lignes sur les cartes */
+.synopsis {
+  margin: 0;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Parution + ISBN en bas de la carte */
+.infos-livre {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto; /* colle les infos en bas, même si le synopsis est court */
+  padding-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+  border-top: 2px dashed #e8e4ff;
+}
+
+.isbn {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  letter-spacing: 0.03em;
+}
+
+/* =========================================================
+   FICHE DÉTAIL (un livre ou un auteur)
+   ========================================================= */
+.fiche {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: var(--texte);
+  background: var(--nuage);
+  border-radius: 24px;
+  box-shadow: var(--ombre);
+}
+
+.fiche h1 {
+  color: var(--texte);
+  text-shadow: none;
+}
+
+.fiche .synopsis,
+.fiche .biographie {
+  display: block;       /* annule la coupe à 3 lignes */
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+  line-height: 1.6;
+}
+
+/* Liste « étiquette : valeur » (parution, ISBN, genre…) */
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.2rem;
+  margin: 1.5rem 0;
+}
+
+.details dt {
+  font-weight: 600;
+  color: var(--texte-doux);
+}
+
+.details dd {
+  margin: 0;
+}
+
+/* =========================================================
+   AUTEURS : cartes avec pastille d'initiales
+   ========================================================= */
+.carte-auteur {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem;
+  color: var(--texte);
+  background: var(--nuage);
+  border-radius: 20px;
+  box-shadow: var(--ombre);
+}
+
+.avatar {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--texte);
+  background: var(--arc-en-ciel);
+  border-radius: 50%;
+}
+
+.carte-auteur h3 {
+  margin: 0 0 0.3rem;
+}
+
+/* Le nom de famille en petites capitales : « Victor HUGO » */
+.nom-famille {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+.biographie {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Livres de l'auteur */
+.livres-auteur {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.livres-auteur a {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--texte);
+  text-decoration: none;
+  background: #efeaff;
+  border-radius: 999px;
+}
+
+.livres-auteur a:hover {
+  background: var(--lavande);
+}
+
+/* =========================================================
+   TABLEAUX (partie admin / listes)
+   ========================================================= */
+.tableau {
+  overflow-x: auto; /* scroll horizontal sur mobile */
+  border-radius: 20px;
+  box-shadow: var(--ombre);
+}
+
+table {
+  width: calc(100% - 6rem); /* 3rem de marge de chaque côté */
+  max-width: 1400px;
+  margin: 0 auto 1.5rem;
+  border-collapse: separate; /* nécessaire pour que les coins arrondis s'affichent */
+  border-spacing: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  color: var(--texte);
+  background: var(--nuage);
+  box-shadow: var(--ombre);
+}
+
+/* Le lien « Create new » sous le tableau devient un bouton centré */
+table + a {
+  display: table;
+  margin: 0 auto;
+  padding: 0.55rem 1.2rem;
+  font-weight: 600;
+  color: var(--texte);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--rose), var(--lavande));
+  border-radius: 999px;
+  box-shadow: 0 4px 0 rgba(59, 47, 94, 0.25);
+}
+
+@media (max-width: 600px) {
+  table {
+    width: 100%;
+  }
+}
+
+/* Un seul dégradé pour toute la ligne d'en-tête */
+thead tr {
+  background: var(--arc-en-ciel);
+}
+
+th {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  font-weight: 600;
+  background: transparent;
+}
+
+td {
+  padding: 1rem 1.2rem;
+  line-height: 1.5;
+  border-bottom: 1px solid #ece7ff;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) {
+  background: #f7f4ff;
+}
+
+tbody tr:hover {
+  background: #fdeef8;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Lignes verticales entre les colonnes (pas avant la première) */
+th + th,
+td + td {
+  border-left: 2px solid #ece7ff;
+}
+
+/* Liens dans le tableau (show / edit) : lisibles sur fond clair */
+td a {
+  color: #d45fa6;
+  font-weight: 600;
+}
+
+td a:hover {
+  color: var(--texte);
+}
+
+/* Bouton « … » pour afficher la suite d'un texte long */
+.btn-plus {
+  margin-left: 0.3rem;
+  padding: 0 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  background: var(--lavande);
+  box-shadow: none;
+  vertical-align: baseline;
+}
+
+.btn-plus:hover,
+.btn-plus:active {
+  transform: none;
+  box-shadow: none;
+  background: var(--rose);
+}
+
+/* Colonne des boutons Modifier / Supprimer */
+td.actions {
+  width: 1%; /* la colonne se réduit à la taille de son contenu */
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Tableau « fiche » (pages show) : pas d'en-tête,
+   la colonne des titres prend une couleur de l'arc-en-ciel par ligne */
+tbody th {
+  width: 1%;              /* colonne des titres juste assez large */
+  white-space: nowrap;
+  vertical-align: top;
+  background: var(--rose);
+}
+
+tbody tr:nth-child(6n + 2) th { background: var(--peche); }
+tbody tr:nth-child(6n + 3) th { background: var(--jaune); }
+tbody tr:nth-child(6n + 4) th { background: var(--menthe); }
+tbody tr:nth-child(6n + 5) th { background: var(--bleu); }
+tbody tr:nth-child(6n + 6) th { background: var(--lavande); }
+
+th + td {
+  border-left: 2px solid #ece7ff;
+}
+
+/* Pastilles de genres dans une cellule : arc-en-ciel en boucle */
+td .genre {
+  margin: 0 0.3rem 0.3rem 0;
+}
+
+td .genre:nth-child(6n + 1) { background: var(--rose); }
+td .genre:nth-child(6n + 2) { background: var(--peche); }
+td .genre:nth-child(6n + 3) { background: var(--jaune); }
+td .genre:nth-child(6n + 4) { background: var(--menthe); }
+td .genre:nth-child(6n + 5) { background: var(--bleu); }
+td .genre:nth-child(6n + 6) { background: var(--lavande); }
+
+/* Rangée de boutons centrée sous un tableau ou une fiche (Retour / Modifier / Supprimer) */
+.barre-boutons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 0 auto 1.5rem;
+}
+
+.barre-boutons form,
+.barre-boutons form[name] {
+  display: inline;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* Un formulaire dans une cellule (bouton Supprimer) ne doit jamais devenir une carte,
+   même s'il a un attribut name : on annule le style de form[name] */
+td form,
+td form[name] {
+  display: inline;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* =========================================================
+   FORMULAIRES
+   ========================================================= */
+.formulaire {
+  display: grid;
+  gap: 1rem;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: var(--texte);
+  background: var(--nuage);
+  border-radius: 24px;
+  box-shadow: var(--ombre);
+}
+
+/* Formulaires générés par make:crud (<form name="auteur">, <form name="livres">…)
+   Le formulaire de suppression n'a pas d'attribut name, il n'est donc pas touché */
+form[name] {
+  display: grid;
+  gap: 1rem;
+  width: calc(100% - 6rem); /* 3rem de marge de chaque côté */
+  max-width: 900px;
+  margin: 0 auto 1.5rem;
+  padding: 2rem;
+  color: var(--texte);
+  background: var(--nuage);
+  border-radius: 24px;
+  box-shadow: var(--ombre);
+}
+
+/* Bandeau arc-en-ciel en haut de la carte :
+   le fond blanc s'arrête à la bordure (padding-box),
+   le dégradé passe dessous et ne se voit que dans la bordure (border-box) */
+form[name] {
+  border-top: 10px solid transparent;
+  background:
+    linear-gradient(var(--nuage), var(--nuage)) padding-box,
+    var(--arc-en-ciel) border-box;
+}
+
+/* Chaque champ prend une couleur de l'arc-en-ciel, en boucle.
+   Structure générée par Symfony : form > div#auteur > div (un par champ) */
+form[name] > div {
+  display: grid;
+  gap: 1rem;
+}
+
+form[name] > div > div {
+  --couleur: var(--rose);
+}
+
+form[name] > div > div:nth-child(6n + 2) { --couleur: var(--peche); }
+form[name] > div > div:nth-child(6n + 3) { --couleur: #f2d96b; } /* jaune plus foncé, lisible sur blanc */
+form[name] > div > div:nth-child(6n + 4) { --couleur: var(--menthe); }
+form[name] > div > div:nth-child(6n + 5) { --couleur: var(--bleu); }
+form[name] > div > div:nth-child(6n + 6) { --couleur: var(--lavande); }
+
+/* Petite pastille de couleur devant chaque label */
+form[name] label::before {
+  content: '';
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background: var(--couleur, var(--rose));
+}
+
+/* Le champ reprend la couleur de son label */
+form[name] > div > div input:not([type='checkbox']):not([type='radio']),
+form[name] > div > div textarea,
+form[name] > div > div select {
+  border-color: var(--couleur);
+  background: #fff;
+}
+
+/* Cases à cocher (ex. genres d'un livre).
+   Symfony les génère sans enveloppe : <div id="livres_genres"> <input> <label> <input> <label>…
+   On transforme le conteneur en encadré, et chaque label en pastille à côté de sa case */
+form[name] div:has(> input[type='checkbox']) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 0.4rem;
+  padding: 0.9rem 1rem;
+  background: #fff;
+  border: 2px solid var(--couleur, var(--lavande));
+  border-radius: 16px;
+}
+
+form[name] div:has(> input[type='checkbox']) > label {
+  display: inline-block;
+  margin: 0 0.8rem 0 0; /* espace avant la case suivante */
+  padding: 0.25rem 0.8rem;
+  font-weight: 500;
+  background: #f3efff;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* Pas de pastille de couleur devant chaque choix (seulement devant le titre « Genres ») */
+form[name] div:has(> input[type='checkbox']) > label::before {
+  display: none;
+}
+
+/* Choix coché : la pastille passe en arc-en-ciel */
+form[name] div:has(> input[type='checkbox']) > input:checked + label {
+  background: var(--arc-en-ciel);
+  font-weight: 600;
+}
+
+form[name] button {
+  justify-self: start; /* le bouton Save garde sa taille au lieu de s'étirer */
+}
+
+/* Le lien « back to list » sous le formulaire, centré */
+form[name] + a {
+  display: table;
+  margin: 0 auto 1rem;
+}
+
+@media (max-width: 600px) {
+  form[name] {
+    width: 100%;
+    padding: 1.2rem;
+  }
+}
+
+label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+input:not([type='checkbox']):not([type='radio']),
+textarea,
+select {
+  width: 100%;
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  color: var(--texte);
+  background: #fff;
+  border: 2px solid var(--lavande);
+  border-radius: 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea {
+  min-height: 140px;
+  resize: vertical; /* pour le synopsis et la biographie */
+}
+
+/* Sélecteur multiple (ex. choisir les livres d'un auteur) */
+select[multiple] {
+  min-height: 140px;
+}
+
+input:not([type='checkbox']):not([type='radio']):focus,
+textarea:focus,
+select:focus {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 4px rgba(246, 166, 214, 0.35);
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--rose);
+  cursor: pointer;
+}
+
+/* Barre de recherche */
+.recherche {
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+
+.recherche input {
+  border-radius: 999px !important;
+}
+
+/* Message d'erreur sous un champ */
+.erreur {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: #c2185b;
+}
+
+/* =========================================================
+   BOUTONS
+   ========================================================= */
+button,
+.btn {
+  display: inline-block;
+  padding: 0.55rem 1.2rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--texte);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--rose), var(--lavande));
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(59, 47, 94, 0.25);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+button:hover,
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 rgba(59, 47, 94, 0.25);
+}
+
+button:active,
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(59, 47, 94, 0.25);
+}
+
+.btn-petit {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.btn-modifier {
+  background: var(--menthe);
+}
+
+.btn-supprimer {
+  background: var(--danger);
+}
+
+/* =========================================================
+   MESSAGES (succès / erreur) et liste vide
+   ========================================================= */
+.message {
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+  padding: 0.8rem 1.2rem;
+  color: var(--texte);
+  border-radius: 16px;
+  box-shadow: var(--ombre);
+}
+
+.message-succes {
+  background: var(--menthe);
+}
+
+.message-erreur {
+  background: var(--danger);
+}
+
+.vide {
+  padding: 2rem;
+  text-align: center;
+  color: var(--texte-doux);
+  background: rgba(253, 250, 255, 0.85);
+  border-radius: 20px;
+}
+
+/* ===== Pied de page ===== */
+footer {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .fiche,
+  .formulaire {
+    padding: 1.2rem;
+  }
+
+  .carte-auteur {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .livres-auteur {
+    justify-content: center;
+  }
+}
+
+/* Pas d'animations pour les personnes qui les ont désactivées */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

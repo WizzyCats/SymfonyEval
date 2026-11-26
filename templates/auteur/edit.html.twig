@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Auteur{% endblock %}
+
+{% block body %}
+    <h1>Modifier Auteur</h1>
+
+{{ include('auteur/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+
+<div class="barre-boutons">
+    <a href="{{ path('app_auteur_index') }}" class="btn">Retour à la liste</a>
+    <form method="post" action="{{ path('app_auteur_delete', {'id': auteur.id}) }}"
+          onsubmit="return confirm('Supprimer l\'auteur « {{ auteur.pseudonyme|e('js') }} » et tous ses livres ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ auteur.id) }}">
+        <button class="btn btn-supprimer">Supprimer</button>
+    </form>
+</div>
+{% endblock %}

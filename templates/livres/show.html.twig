@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ livre.nom }}{% endblock %}
+
+{% block body %}
+    <h1>{{ livre.nom }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nom</th>
+                <td>{{ livre.nom }}</td>
+            </tr>
+            <tr>
+                <th>Synopsis</th>
+                <td>{{ livre.synopsis }}</td>
+            </tr>
+            <tr>
+                <th>Publication</th>
+                <td>{{ livre.publication ? livre.publication|date('d/m/Y') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Isbn</th>
+                <td>{{ livre.isbn }}</td>
+            </tr>
+            <tr>
+                <th>Auteur</th>
+                <td>{{ livre.auteur.pseudonyme }}</td>
+            </tr>
+            <tr>
+                <th>Genres</th>
+                <td>
+                    {% for genre in livre.genres %}
+                        <span class="genre">{{ genre.nom }}</span>
+                    {% else %}
+                        Aucun genre
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="barre-boutons">
+        <a href="{{ path('app_livres_index') }}" class="btn">Retour à la liste</a>
+        <a href="{{ path('app_livres_edit', {'id': livre.id}) }}" class="btn btn-modifier">Modifier</a>
+        <form method="post" action="{{ path('app_livres_delete', {'id': livre.id}) }}"
+              onsubmit="return confirm('Supprimer le livre « {{ livre.nom|e('js') }} » ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+            <button class="btn btn-supprimer">Supprimer</button>
+        </form>
+    </div>
+{% endblock %}
